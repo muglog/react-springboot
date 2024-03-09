@@ -1,30 +1,16 @@
-import {useEffect, useState} from "react";
-import axios from "axios";
+import { Routes, Route, Link } from "react-router-dom";
 
-let index = 0;
+import Login from "./components/login/Login";
+import GoogleLoginProcess from "./components/login/GoogleLoginProcess";
 
 function App() {
-  const [char, setChar] = useState('');
-
-  useEffect(() => {
-    axios.get('/api/test/getChar')
-        .then((res) => {
-          setChar(res.data);
-        })
-  }, []);
-  return (
-      <div className="App">
-        <button onClick={ ()=> {
-            axios.get('/api/test/getChar', {params: {index: index}})
-                .then((res) => {
-                    setChar(res.data);
-                    index = index > 5 ?  0 : index+1;
-                })
-                .catch(() => console.log('요청 실패'))}
-        }>인사</button>
-        <p>{ char }</p>
-      </div>
-  );
+    return (
+        <Routes>
+            <Route path="/" element={<div>메인페이지</div>} />
+            <Route path="/login" element={<Login/>} />
+            <Route path="/google/callback" element={<GoogleLoginProcess/>} />
+        </Routes>
+    );
 }
 
 export default App;
