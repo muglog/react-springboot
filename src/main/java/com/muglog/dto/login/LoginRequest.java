@@ -1,4 +1,4 @@
-package com.muglog.dto;
+package com.muglog.dto.login;
 
 import lombok.Getter;
 import lombok.Setter;
