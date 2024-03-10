@@ -4,7 +4,7 @@ function Login() {
 		client_id=${ process.env.REACT_APP_GOOGLE_CLIENT_ID }
 		&redirect_uri=${ process.env.REACT_APP_GOOGLE_REDIRECT_URL }
 		&response_type=token
-		&scope=email`;
+		&scope=email profile`;
     };
 
     return (

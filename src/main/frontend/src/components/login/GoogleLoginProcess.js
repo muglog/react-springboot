@@ -5,13 +5,7 @@ import axios from "axios";
 const GoogleLoginProcess = () => {
     const navigate = useNavigate();
 
-    // 이미 가입한 유저일 시 : 메인 페이지로 이동
-    const handleHome = () => {
-        navigate("/");
-        window.location.reload();
-    };
-
-    // 현재 url에서 code 부분 추출
+    // 현재 url에서 access_token 추출
     const hash = window.location.hash;
     const accessToken = hash.substring(hash.indexOf('=') + 1, hash.indexOf('&'));
 
@@ -25,15 +19,19 @@ const GoogleLoginProcess = () => {
                 "/api/login/googleLogin",
                 data,
             ).then(function (res){
-                const jwt = res.data;
-                console.log(res);
+                const jwt = res.data.jwt;
+                const userName = res.data.name;
+                const userEmail = res.data.email;
+
+                // 로컬 스토리지에 jwt 토큰 저장
                 localStorage.setItem("muglog_token", jwt);
 
-                handleHome();
+                const redirectUrl = `/login/success?name=${userName}&email=${userEmail}`;
+                navigate(redirectUrl);
+                window.location.reload();
             })
         } catch (error) {
             console.log(error);
-
         }
     };
 
