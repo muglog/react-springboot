@@ -1,7 +1,10 @@
 package com.muglog.controller;
 
+import com.muglog.dto.MemberDto;
 import com.muglog.dto.login.LoginRequest;
+import com.muglog.service.MemberService;
 import com.muglog.utils.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -13,8 +16,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/login")
+@RequiredArgsConstructor
 public class LoginController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final MemberService memberService;
 
     @PostMapping("/googleLogin")
     public ResponseEntity<?> googleLogin(@RequestBody LoginRequest loginRequest){
@@ -38,8 +44,22 @@ public class LoginController {
             // 반환값에서 email, name 추출
             String email = response.get("email").toString();
             String name = response.get("name").toString();
-            Long userId = 1L; // TODO db에서 email, socialLoginType으로 유저아이디 조회하기
-            String jwt = JwtUtil.createJwtToken(userId);
+            String jwt = "";
+
+            // 받아온 email, name을 memberDto에 매핑
+            MemberDto memberDto = MemberDto.userInfoToMemberDto("google", name, email);
+
+            // member정보가 없으면 저장, 있으면 마지막 로그인날짜 업데이트
+            Long userId = memberService.findMemIdByEmailAndLoginType(email, "google");
+            if(userId == null) {
+                userId = memberService.save(memberDto);
+            } else {
+                memberService.updateLastLoginDate(userId);
+            }
+
+            if(userId > 0){
+                jwt = JwtUtil.createJwtToken(userId);
+            }
 
             Map<String,Object> resMap = new HashMap<>();
             resMap.put("jwt", jwt);
