@@ -50,16 +50,9 @@ public class LoginController {
             MemberDto memberDto = MemberDto.userInfoToMemberDto("google", name, email);
 
             // member정보가 없으면 저장, 있으면 마지막 로그인날짜 업데이트
-            Long userId = memberService.findMemIdByEmailAndLoginType(email, "google");
-            if(userId == null) {
-                userId = memberService.save(memberDto);
-            } else {
-                memberService.updateLastLoginDate(userId);
-            }
+            Long userId = memberService.getLoginMemIdAndUpdateLastLoginDate(memberDto);
 
-            if(userId > 0){
-                jwt = JwtUtil.createJwtToken(userId);
-            }
+            jwt = JwtUtil.createJwtToken(userId);
 
             Map<String,Object> resMap = new HashMap<>();
             resMap.put("jwt", jwt);
