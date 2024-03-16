@@ -1,12 +1,21 @@
 package com.muglog.controller;
 
-import org.springframework.data.relational.core.sql.In;
+import com.muglog.common_enum.FileType;
+import com.muglog.utils.FileUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
+@RequiredArgsConstructor
 public class TestController {
+
+    private final FileUtil s3Service;
 
     @GetMapping("/api/test")
     private String test(){
@@ -19,5 +28,10 @@ public class TestController {
         int strLength = 5;
 
         return String.valueOf(hello.charAt(index % strLength));
+    }
+
+    @PostMapping("/api/test/upload")
+    public String upload(MultipartFile multipartFile) throws IOException {
+        return s3Service.uploadFiles(multipartFile, FileType.REVIEW_PHOTO);
     }
 }
