@@ -1,10 +1,12 @@
 package com.muglog.service;
 
-import com.muglog.dto.MemberDto;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
-public interface MemberService {
+@Log4j2
+@Service
+@RequiredArgsConstructor
+public class MemberService {
 
-    Long findMemIdByEmailAndLoginType(String email, String loginType);
-    Long save(MemberDto memberDto);
-    void updateLastLoginDate(Long userId);
 }
