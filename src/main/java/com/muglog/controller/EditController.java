@@ -71,7 +71,7 @@ public class EditController {
             List<Store> res = storeService.getStoreByStoreNmAndMapXY(stores);
 
             //유저 로그 저장
-            return new ResponseEntity<>(stores, new HttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity<>(res, new HttpHeaders(), HttpStatus.OK);
         } catch (Exception e) {
             log.error("Exception :: {}", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

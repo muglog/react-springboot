@@ -4,6 +4,7 @@ import Login from "./components/login/Login";
 import GoogleLoginProcess from "./components/login/GoogleLoginProcess";
 import LoginSuccess from "./components/login/LoginSuccess";
 import NaverLoginProcess from "./components/login/NaverLoginProcess";
+import EditMuglog from "./components/edit/EditMuglog";
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
             <Route path="/google/callback" element={<GoogleLoginProcess/>} />
             <Route path="/naver/callback" element={<NaverLoginProcess/>} />
             <Route path="/login/success" element={<LoginSuccess/>} />
+            <Route path="/edit" element={<EditMuglog/>} />
         </Routes>
     );
 }
