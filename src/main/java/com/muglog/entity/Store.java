@@ -31,11 +31,11 @@ public class Store {
     @Column(nullable = false)
     private String storeAddress; // 도로명 주소
 
-    @Column(nullable = false)
-    private Integer katech_x;
+    @Column(name = "katech_x", nullable = false)
+    private Integer katechX;
 
-    @Column(nullable = false)
-    private Integer katech_y;
+    @Column(name = "katech_y", nullable = false)
+    private Integer katechY;
 
     private String category;
 
@@ -46,6 +46,8 @@ public class Store {
 
     @ColumnDefault("0.0")
     private Float agvRating;
+
+    private String thumbNail;
 
     @CreatedDate
     private LocalDateTime regDate;
