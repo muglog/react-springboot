@@ -1,8 +1,11 @@
-import {useState, useEffect} from "react";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
+import React, {useState, useEffect} from "react";
 import axios from "axios";
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import 'react-spring-bottom-sheet/dist/style.css'
 import {useNavigate} from "react-router-dom";
+import useGeoLocation from "./../hooks/useGeolocation.tsx";
+const { kakao } = window;
 
 function EditMuglog() {
     const [editStep, setEditStep] = useState(1);
@@ -18,33 +21,66 @@ function EditMuglog() {
 }
 
 function EditStore(props) {
-    const [storeSearchKeyword, setStoreSearchKeyword] = useState('');
+    const { kakao } = window;
+    const [info, setInfo] = useState()
+    const [markers, setMarkers] = useState([])
+    const [map, setMap] = useState()
     const [storeSearchResult, setStoreSearchResult] = useState([]);
+    const location = useGeoLocation();
+    const [center, setCenter] = useState({x: 37.5559, y : 126.9723});
 
-    const storeSearchKeywordInputHandle = (event) => {
-        const keyword = event.target.value;
+    useEffect(() => {
+        if(location.loaded){
+            setCenter({x: location.coordinates.lat, y : location.coordinates.lng});
+        }
+    }, [location]);
 
-        setStoreSearchKeyword(keyword);
-    };
+    function searchStore(){
+        if (!map) return
+        const ps = new kakao.maps.services.Places()
+        const searchKeyword = document.getElementById("storeSearchKeyword").value;
 
-    const searchStore = async () => {
-        if (!storeSearchKeyword) {
-            alert("검색어를 입력해주세요.");
-            return;
+        if(!searchKeyword){
+            alert("검색어를 입력해주세요!");
+            return false;
         }
 
-        const jwtToken = localStorage.getItem("muglog_token");
-        if (!jwtToken) {
-            alert("로그인 해주세용");
+        const options = {
+            location: map.getCenter(), size: 5, sort : kakao.maps.services.SortBy.DISTANCE, category_group_code : "FD6,CE7"
         }
 
-        const res = axios.get(
-            `/api/edit/store/search?keyword=${storeSearchKeyword}`,
-        ).then(function (res){
-            console.log(res.data);
-            setStoreSearchResult(res.data);
-        });
-    };
+        ps.keywordSearch(searchKeyword, (data, status, _pagination) => {
+            console.log(status);
+            if (status === kakao.maps.services.Status.OK) {
+                const bounds = new kakao.maps.LatLngBounds()
+                let markers = []
+                for (var i = 0; i < data.length; i++) {
+                    markers.push({
+                        position: {
+                            lat: data[i].y,
+                            lng: data[i].x,
+                        },
+                        content: data[i].place_name,
+                    })
+
+                    bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+                }
+                setMarkers(markers)
+
+                // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                map.setBounds(bounds)
+                setStoreSearchResult(data);
+                console.log(data);
+            }else if(status === kakao.maps.services.Status.ZERO_RESULT){
+                alert("검색 결과가 없습니다");
+                let markers = [];
+                setMarkers(markers);
+                setStoreSearchResult([]);
+            }else{
+                alert("오류가 발생하였습니다.");
+            }
+        }, options)
+    }
 
     return (
         <>
@@ -54,9 +90,9 @@ function EditStore(props) {
 
             <div className="store-search-wrap">
                 <label htmlFor="storeSearchKeyword">🔍 </label>
-                <input onChange={storeSearchKeywordInputHandle} id="storeSearchKeyword"
+                <input id="storeSearchKeyword"
                        placeholder="음식점 이름을 입력해주세요!!!"/>
-                <button onClick={searchStore}>검색</button>
+                <button onClick={() => searchStore()}>검색</button>
             </div>
 
             <div className="store-search-result-wrap" style={{padding: "10px 10px"}}>
@@ -65,30 +101,76 @@ function EditStore(props) {
                         <StoreSearchResultRow storeInfo={storeInfo} setStoreInfo={props.setStoreInfo} key={index}/>
                     )
                 }
+                <div id="pagination"></div>
             </div>
+
+            <Map // 로드뷰를 표시할 Container
+                center={{
+                    lat: center.x,
+                    lng: center.y,
+                }}
+                style={{
+                    width: "100%",
+                    height: "350px",
+                }}
+                level={3}
+                onCreate={setMap}
+            >
+                {markers.map((marker) => (
+                    <MapMarker
+                        key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+                        position={marker.position}
+                        onClick={() => setInfo(marker)}
+                    >
+                        {info &&info.content === marker.content && (
+                            <div style={{color:"#000"}}>{marker.content}</div>
+                        )}
+                    </MapMarker>
+                ))}
+            </Map>
 
             {
                 props.storeInfo == null ? '' : <>
-                    <p dangerouslySetInnerHTML={{__html : props.storeInfo.storeNm}}></p>
+                    <p dangerouslySetInnerHTML={{__html : props.storeInfo.place_name}}></p>
                     <button onClick={() => {props.setEditStep(2)}}>다음</button>
                 </>
             }
         </>
     );
-}
 
-function StoreSearchResultRow(props){
-    return (
+    function StoreSearchResultRow(props){
+        function selectStore(storeInfo){
+            props.setStoreInfo(storeInfo);
+
+            const bounds = new kakao.maps.LatLngBounds()
+            let markers = []
+
+            markers.push({
+                position: {
+                    lat: storeInfo.y,
+                    lng: storeInfo.x,
+                },
+                content: storeInfo.place_name,
+            })
+
+            bounds.extend(new kakao.maps.LatLng(storeInfo.y, storeInfo.x))
+            setMarkers(markers)
+
+            map.setBounds(bounds)
+        }
+
+        return (
             <div className="store-search-result-row" style={{marginBottom: "5px", display: "flex", border: "1px", borderStyle: "solid", borderRadius: "5px"}}>
                 <div className="store-search-result-left-div" style={{padding: "5px", margin: "5px 0px", flexBasis : "85%"}}>
-                    <div dangerouslySetInnerHTML={{__html : props.storeInfo.storeNm}}></div>
-                    <p style={{margin: "0px 0px", fontSize: "12px"}}>{ props.storeInfo.storeAddress }</p>
+                    <div dangerouslySetInnerHTML={{__html : props.storeInfo.place_name}}></div>
+                    <p style={{margin: "0px 0px", fontSize: "12px"}}>{ props.storeInfo.address_name }</p>
                 </div>
                 <div className="store-search-result-right-div" style={{flexBasis : "15%", textAlign: "center", lineHeight: "50px"}}>
-                    <button onClick={() => {props.setStoreInfo(props.storeInfo)}} style={{margin: "auto", verticalAlign: "middle"}}>선택</button>
+                    <button onClick={() => {selectStore(props.storeInfo)}} style={{margin: "auto", verticalAlign: "middle"}}>선택</button>
                 </div>
             </div>
-    )
+        )
+    }
 }
 
 function EditReview(props) {
@@ -297,7 +379,7 @@ function EditReview(props) {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        storeSeq: props.storeInfo.storeSeq,
+                        storeId: props.storeInfo.id,
                         reviews: reviews
                     }),
                 })
@@ -308,7 +390,7 @@ function EditReview(props) {
 
     return (
         <>
-                <h3>{props.storeInfo.storeNm}<span style={{marginLeft: "10px"}}><button onClick={resetStore}>재선택</button></span>
+                <h3>{props.storeInfo.place_name}<span style={{marginLeft: "10px"}}><button onClick={resetStore}>재선택</button></span>
                 </h3>
                 <hr/>
                 <p>메뉴별 리뷰<span style={{marginLeft: "10px"}}><button onClick={openAddMenuModal}>+</button></span></p>
