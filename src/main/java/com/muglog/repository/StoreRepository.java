@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
-    Store findByStoreNmAndKatechXAndKatechY(String storeNm, Integer katechX, Integer katechY);
 }

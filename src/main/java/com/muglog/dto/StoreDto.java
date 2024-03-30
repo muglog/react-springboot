@@ -10,8 +10,8 @@ public class StoreDto {
     private Long seq;
     private String title;
     private String roadAddress;
-    private Integer mapx;
-    private Integer mapy;
+    private Integer lat;
+    private Integer lng;
     private String category;
     private String telephone;
     private String thumbNail;
@@ -20,8 +20,8 @@ public class StoreDto {
         return Store.builder()
                     .storeNm(dto.title)
                     .storeAddress(dto.roadAddress)
-                    .katechX(dto.mapx)
-                    .katechY(dto.mapy)
+                    .lat(dto.lat)
+                    .lng(dto.lng)
                     .category(dto.category)
                     .telephone(dto.telephone)
                     .thumbNail(dto.thumbNail)

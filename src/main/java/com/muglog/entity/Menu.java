@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Menu {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long seq;
 
     @Column(nullable = false)

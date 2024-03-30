@@ -1,9 +1,11 @@
 package com.muglog.entity;
 
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -40,6 +42,10 @@ public class MenuReview {
 
     @Column(nullable = false)
     private String reviewContent;
+
+    @Type(StringArrayType.class)
+    @Column(columnDefinition = "text[]")
+    private String[] imageUrlArray;
 
     @Column(nullable = false)
     private Integer thread;

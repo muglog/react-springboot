@@ -22,8 +22,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Store {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long seq;
+    private Long storeId;
 
     @Column(nullable = false)
     private String storeNm;
@@ -31,11 +30,11 @@ public class Store {
     @Column(nullable = false)
     private String storeAddress; // 도로명 주소
 
-    @Column(name = "katech_x", nullable = false)
-    private Integer katechX;
+    @Column(name = "lat", nullable = false)
+    private Integer lat;
 
-    @Column(name = "katech_y", nullable = false)
-    private Integer katechY;
+    @Column(name = "lng", nullable = false)
+    private Integer lng;
 
     private String category;
 
