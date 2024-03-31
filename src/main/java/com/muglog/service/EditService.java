@@ -97,4 +97,9 @@ public class EditService {
 
     }
 
+    public Menu findByMenuNm(String menuNm) {
+        return menuRepository.findTopByMenuNmContainingIgnoreCase(menuNm)
+                .orElseThrow(RuntimeException::new);
+    }
+
 }

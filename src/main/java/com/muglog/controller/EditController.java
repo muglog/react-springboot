@@ -84,4 +84,17 @@ public class EditController {
         }
     }
 
+    //메뉴 검색
+    @GetMapping("/menu/search")
+    public ResponseEntity<?> menuSearch(@RequestParam String menuNm) {
+        try {
+            Menu menu = editService.findByMenuNm(menuNm);
+            MenuDto menuDto = MenuDto.entityToDto(menu);
+            return new ResponseEntity<>(menuDto, new HttpHeaders(), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Exception", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
