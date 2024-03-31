@@ -29,13 +29,19 @@ public class Muglog {
     private Long seq;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "store_seq")
+    @JoinColumn(name = "store_seq", insertable = false, updatable = false)
     private Store store;
+
+    @Column(name = "store_seq")
+    private Long storeSeq;
 
     @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "writer_id")
+    @JoinColumn(name = "writer_id", insertable = false, updatable = false)
     private Member writer;
+
+    @Column(name = "writer_id")
+    private Long writerId;
 
     @Column(nullable = false)
     @Builder.Default
@@ -47,4 +53,8 @@ public class Muglog {
     @LastModifiedDate
     private LocalDateTime modDate;
 
+    public Muglog(Long storeSeq, Long writerId){
+        this.storeSeq = storeSeq;
+        this.writerId = writerId;
+    }
 }

@@ -31,10 +31,10 @@ public class Store {
     private String storeAddress; // 도로명 주소
 
     @Column(name = "lat", nullable = false)
-    private Integer lat;
+    private Double lat;
 
     @Column(name = "lng", nullable = false)
-    private Integer lng;
+    private Double lng;
 
     private String category;
 

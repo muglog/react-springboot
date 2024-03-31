@@ -1,11 +1,20 @@
 package com.muglog.controller;
 
+import com.muglog.dto.MenuDto;
+import com.muglog.dto.review.MuglogDto;
+import com.muglog.entity.Menu;
+import com.muglog.service.EditService;
 import com.muglog.service.StoreService;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/edit")
 @RequiredArgsConstructor
@@ -13,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class EditController {
 
     private final StoreService storeService;
+
+    private final EditService editService;
 
     @Value("${naver.store.search.clientId}")
     private String clientId;
@@ -61,5 +72,16 @@ public class EditController {
 //        }
 //    }
 
+    //먹로그 등록
+    @PostMapping("")
+    public void saveReview(@RequestBody MuglogDto muglogDto, HttpServletRequest request) {
+        try {
+            String accessToken = request.getHeader("access_token");
+            editService.save(muglogDto, accessToken);
+        } catch (Exception e) {
+            log.error("Exception", e);
+            throw new RuntimeException(e);
+        }
+    }
 
 }

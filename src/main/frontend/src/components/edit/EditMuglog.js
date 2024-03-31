@@ -380,6 +380,7 @@ function EditReview(props) {
                     },
                     body: JSON.stringify({
                         storeId: props.storeInfo.id,
+                        storeNm: props.storeInfo.place_name,
                         reviews: reviews
                     }),
                 })

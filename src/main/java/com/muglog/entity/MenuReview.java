@@ -26,12 +26,18 @@ public class MenuReview {
     private Long seq;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "moglog_seq")
+    @JoinColumn(name = "muglog_seq", insertable = false, updatable = false)
     private Muglog muglog;
 
+    @Column(name = "muglog_seq")
+    private Long muglogSeq;
+
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "menu_seq")
+    @JoinColumn(name = "menu_seq", insertable = false, updatable = false)
     private Menu menu;
+
+    @Column(name = "menu_seq")
+    private Long menuSeq;
 
     private String customMenuNm;
 
@@ -58,4 +64,9 @@ public class MenuReview {
 
     @CreatedDate
     private LocalDateTime regDate;
+
+    public MenuReview(Long muglogSeq, Long menuSeq) {
+        this.muglogSeq = muglogSeq;
+        this.menuSeq = menuSeq;
+    }
 }

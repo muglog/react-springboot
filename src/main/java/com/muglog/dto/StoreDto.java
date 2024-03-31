@@ -10,8 +10,8 @@ public class StoreDto {
     private Long seq;
     private String title;
     private String roadAddress;
-    private Integer lat;
-    private Integer lng;
+    private Double lat;
+    private Double lng;
     private String category;
     private String telephone;
     private String thumbNail;
