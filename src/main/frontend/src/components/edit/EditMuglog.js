@@ -26,14 +26,14 @@ function EditStore(props) {
     const [markers, setMarkers] = useState([])
     const [map, setMap] = useState()
     const [storeSearchResult, setStoreSearchResult] = useState([]);
-    const location = useGeoLocation();
+    const geoLocation = useGeoLocation();
     const [center, setCenter] = useState({x: 37.5559, y : 126.9723});
 
     useEffect(() => {
-        if(location.loaded){
-            setCenter({x: location.coordinates.lat, y : location.coordinates.lng});
+        if(geoLocation.loaded == true){
+            setCenter({x: geoLocation.coordinates.lat, y : geoLocation.coordinates.lng});
         }
-    }, [location]);
+    }, [geoLocation]);
 
     function searchStore(){
         if (!map) return
