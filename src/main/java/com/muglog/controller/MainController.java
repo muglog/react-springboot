@@ -28,7 +28,7 @@ public class MainController {
     @GetMapping("")
     public ResponseEntity<?> getMuglogs() {
         try {
-            List<MuglogDto> muglogs = muglogRepository.findAllByOrderByRegDateDesc()
+            List<MuglogDto> muglogs = muglogRepository.findAllByIsDelFalseOrderByRegDateDesc()
                     .stream()
                     .map(muglog -> MuglogDto.entityToDto(muglog))
                     .map(muglogDto -> {
