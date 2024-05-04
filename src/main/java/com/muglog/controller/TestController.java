@@ -19,19 +19,6 @@ public class TestController {
 
     private final FileUtil s3Service;
 
-    @GetMapping("/api/test")
-    private String test(){
-        return "test";
-    }
-
-    @GetMapping("/api/test/getChar")
-    private String getChar(@RequestParam(required = false, defaultValue = "0") Integer index){
-        String hello = "안녕하세요";
-        int strLength = 5;
-
-        return String.valueOf(hello.charAt(index % strLength));
-    }
-
     @PostMapping("/api/test/upload")
     public List<String> upload(List<MultipartFile> files) {
         try{
@@ -46,10 +33,5 @@ public class TestController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    @PostMapping("/api/edit")
-    public void saveReview(@RequestBody ReviewDto reviewDto) {
-        System.out.println(reviewDto);
     }
 }

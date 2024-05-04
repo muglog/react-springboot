@@ -2,6 +2,8 @@ package com.muglog.controller;
 
 import com.muglog.dto.login.LoginRequest;
 import com.muglog.service.MemberService;
+import com.muglog.utils.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,5 +80,16 @@ public class LoginController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/isLogined")
+    public void isLogined(HttpServletRequest request){
+        String accessToken = request.getHeader("access_token");
+        Long userId = Long.parseLong(JwtUtil.getUserIdByJwtToken(accessToken));
+
+        if (userId == null) {
+            throw new RuntimeException("USER_NOT_FOUND");
+        }
+    }
+
 }
 

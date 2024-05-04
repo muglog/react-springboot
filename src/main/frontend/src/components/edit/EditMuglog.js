@@ -84,7 +84,7 @@ function EditStore(props) {
 
     return (
         <>
-            <p>
+            <p style={{margin: 0, padding: '10px'}}>
                 음식점 선택
             </p>
 
