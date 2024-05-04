@@ -63,7 +63,7 @@ public class EditService {
                         store = Store.builder()
                                 .storeId(Long.parseLong(String.valueOf(muglogDto.getStoreId())))
                                 .storeNm(String.valueOf(s.get("place_name")))
-                                .storeAddress(String.valueOf("road_address_name"))
+                                .storeAddress(String.valueOf(s.get("road_address_name")))
                                 .lat(Double.parseDouble((String) s.get("x")))
                                 .lng(Double.parseDouble((String) s.get("y")))
                                 .category(String.valueOf(s.get("category_name")))
