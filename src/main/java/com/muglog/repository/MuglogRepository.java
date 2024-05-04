@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MuglogRepository extends JpaRepository<Muglog, Long> {
-    @Override
     @EntityGraph(attributePaths = {"store", "writer"})
-    List<Muglog> findAll();
+    List<Muglog> findAllByOrderByRegDateDesc();
 }
