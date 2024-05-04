@@ -35,7 +35,6 @@ public class Muglog {
     @Column(name = "store_seq")
     private Long storeSeq;
 
-    @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "writer_id", insertable = false, updatable = false)
     private Member writer;
