@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface MuglogRepository extends JpaRepository<Muglog, Long> {
     @EntityGraph(attributePaths = {"store", "writer"})
-    List<Muglog> findAllByOrderByRegDateDesc();
+    List<Muglog> findAllByIsDelFalseOrderByRegDateDesc();
 }
