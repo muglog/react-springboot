@@ -21,8 +21,12 @@ function Main() {
             }
         })
         .then((response) => {
-            console.log(response);
-            navigate("/edit");
+            if(response.status === 200){
+                navigate("/edit");
+            }else{
+                alert('로그인해주세용');
+                navigate('/login');
+            }
         })
         .catch((error) => {
             alert('로그인해주세용');
